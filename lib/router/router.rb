@@ -109,7 +109,7 @@ class Router
       graveyard.keys.each do |url|
         graveyard[url].each do |instance|
           candidate = { :droplet_id => instance[:droplet_id], 
-                        :instance_id => instance[:instance:id] }
+                        :instance_id => instance[:instance_id] }
           graves.push(candidate)
         end
       end
