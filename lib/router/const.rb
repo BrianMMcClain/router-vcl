@@ -3,6 +3,8 @@
 VARNISH_RELOAD = 10
 # Timers for haproxy
 HAPROXY_RELOAD = 10
+# Timers for cleanup graveyard
+GRAVEYARD_CLEAN = 30
 
 # Reconnect count
 RECONNECT_TIME_WAIT = 5

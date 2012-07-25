@@ -16,6 +16,7 @@ class Router
       @droplets = {}
       @registered_droplets= {}
       @unregistered_droplets = {}
+      @graveyard = {}
       @proxies = {}
       @registered_proxy = {}
       @unregistered_proxy = {}
@@ -47,7 +48,7 @@ class Router
         msg_hash = Yajl::Parser.parse(msg, :symbolize_keys => true)
         return unless uris = msg_hash[:uris]
         uris.each { |uri| 
-          unregister_droplet(uri, msg_hash[:host], msg_hash[:port]) 
+          unregister_droplet(uri, msg_hash[:host], msg_hash[:port], msg_hash[:instance_id], msg_hash[:app]) 
         }
 
         unless msg_hash[:debug_url_prefix].nil? then
@@ -73,6 +74,63 @@ class Router
       EM.add_periodic_timer(HAPROXY_RELOAD) {
         update_proxy
       }
+      EM.add_periodic_timer(GRAVEYARD_CLEAN) {
+        search_graveyard
+      }
+    end
+
+    def get_old_connections
+      begin
+        connection_list = `varnishadm -T 127.0.0.1:2000 vcl.list`
+        connection_list.split("\n")
+        return if connection_list.empty?
+
+        entries = connection_list.map { |c| c.split(' ') }
+        return if entries.empty?
+
+        old_connections = []
+
+        entries.each do |status, conn, name|
+          if status != "active" and conn.to_i > 0 
+            old_connections.push([name, conn.to_i])
+          end
+        end
+
+        old_connections
+      rescue => e 
+        log.error "#{e.message}"
+      end
+    end
+
+    def clean_graveyard
+      graveyard = @graveyard.dup
+      graves = []
+
+      graveyard.keys.each do |url|
+        graveyard[url].each do |instance|
+          candidate = { :droplet_id => instance[:droplet_id], 
+                        :instance_id => instance[:instance:id] }
+          graves.push(candidate)
+        end
+      end
+
+      stop_msg = {}
+      stop_msg[:droplets] = graves
+
+      NATS.publish('droplet.stop', Yajl::Encoder.encode(stop_msg))
+    end
+
+    def search_graveyard
+      old_connections = get_old_connections
+      unless old_connections 
+        log.info "All connections are active states"
+        clean_graveyard
+        return
+      end
+
+      old_connections.each do |name, conn|
+        log.info "#{name} has #{conn} connections."
+      end
     end
 
     def check_registered_urls
@@ -158,6 +216,8 @@ class Router
 
       unless @unregistered_droplets.empty? then
         dead_droplets = @unregistered_droplets.dup
+        @graveyard << @unregistered_droplets.dup
+
         @unregistered_droplets = {}
         dead_droplets.keys.each do |url|
           droplets = @droplets[url] || []  
@@ -429,7 +489,7 @@ class Router
       @registered_droplets[url] = droplets
     end
 
-    def unregister_droplet(url, host, port)
+    def unregister_droplet(url, host, port, instid, appid)
       log.info "Unregistering #{url} for host #{host}:#{port}"
       url.downcase!
 
@@ -438,7 +498,9 @@ class Router
       droplet = {
         :host => host,
         :port => port,
-        :url => url
+        :url => url,
+        :instance_id => instid,
+        :droplet_id => appid
       }
 
       droplets << droplet
