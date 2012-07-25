@@ -1,0 +1,7 @@
+mbus: nats://localhost:4222/
+log_file: /var/vcap/sys/log/router.log
+logging:
+  level: info
+  file: /var/vcap/sys/log/router.log
+pid: /var/vcap/sys/run/router.pid
+use_lb: true

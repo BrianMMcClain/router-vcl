@@ -1,0 +1,57 @@
+
+global
+  log        localhost local0 err
+  maxconn    65534
+  daemon
+  quiet
+
+frontend tcp-in
+  bind       :9001
+  mode       tcp
+  log        global
+  clitimeout 30000
+  option     dontlognull
+  maxconn    65534
+acl debug_04b1645b2bf14a0429d9a0b615150997 hdr_beg(host) -i debug.04b1645b2bf14a0429d9a0b615150997
+acl debug_c60f2e8f66287361a1cb7dd55f5ed357 hdr_beg(host) -i debug.c60f2e8f66287361a1cb7dd55f5ed357
+acl debug_d3e1729e749b9a7a405f8d3ea3e20545 hdr_beg(host) -i debug.d3e1729e749b9a7a405f8d3ea3e20545
+acl debug_e95e28bcdabf724ccb3cab2fe840c9d3 hdr_beg(host) -i debug.e95e28bcdabf724ccb3cab2fe840c9d3
+acl debug_dcb0e6c9be79fc29cb2cd7c6222f4308 hdr_beg(host) -i debug.dcb0e6c9be79fc29cb2cd7c6222f4308
+acl debug_7591bf3ed76ce85a701371851481b8c7 hdr_beg(host) -i debug.7591bf3ed76ce85a701371851481b8c7
+use_backend debug04b1645b2bf14a0429d9a0b615150997 if debug_04b1645b2bf14a0429d9a0b615150997
+use_backend debugc60f2e8f66287361a1cb7dd55f5ed357 if debug_c60f2e8f66287361a1cb7dd55f5ed357
+use_backend debugd3e1729e749b9a7a405f8d3ea3e20545 if debug_d3e1729e749b9a7a405f8d3ea3e20545
+use_backend debuge95e28bcdabf724ccb3cab2fe840c9d3 if debug_e95e28bcdabf724ccb3cab2fe840c9d3
+use_backend debugdcb0e6c9be79fc29cb2cd7c6222f4308 if debug_dcb0e6c9be79fc29cb2cd7c6222f4308
+use_backend debug7591bf3ed76ce85a701371851481b8c7 if debug_7591bf3ed76ce85a701371851481b8c7
+
+  default_backend debug_default
+
+backend debug_default
+  mode tcp
+  server debug_default localhost:80
+backend debug04b1645b2bf14a0429d9a0b615150997
+  mode tcp
+  server debug04b1645b2bf14a0429d9a0b615150997 127.0.0.1:38328 maxconn 60000
+
+backend debugc60f2e8f66287361a1cb7dd55f5ed357
+  mode tcp
+  server debugc60f2e8f66287361a1cb7dd55f5ed357 127.0.0.1:52448 maxconn 60000
+
+backend debugd3e1729e749b9a7a405f8d3ea3e20545
+  mode tcp
+  server debugd3e1729e749b9a7a405f8d3ea3e20545 127.0.0.1:47539 maxconn 60000
+
+backend debuge95e28bcdabf724ccb3cab2fe840c9d3
+  mode tcp
+  server debuge95e28bcdabf724ccb3cab2fe840c9d3 127.0.0.1:44721 maxconn 60000
+
+backend debugdcb0e6c9be79fc29cb2cd7c6222f4308
+  mode tcp
+  server debugdcb0e6c9be79fc29cb2cd7c6222f4308 127.0.0.1:52400 maxconn 60000
+
+backend debug7591bf3ed76ce85a701371851481b8c7
+  mode tcp
+  server debug7591bf3ed76ce85a701371851481b8c7 127.0.0.1:45208 maxconn 60000
+
+
