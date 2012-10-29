@@ -82,7 +82,7 @@ class Router
     def get_old_connections
       begin
         connection_list = `varnishadm -T 127.0.0.1:2000 vcl.list`
-        connection_list.split("\n")
+        connection_list = connection_list.split("\n")
         return if connection_list.empty?
 
         entries = connection_list.map { |c| c.split(' ') }
