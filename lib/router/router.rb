@@ -266,8 +266,9 @@ class Router
       default = VARNISH_DEFAULT % time      
       c = 0
       urls.each do |url|
+        url_parsed = url.gsub("http://", "")
         default += VARNISH_DEFAULT_ELSE if c > 0
-        default += VARNISH_DEFAULT_IF_HOST % [url, url, time]
+        default += VARNISH_DEFAULT_IF_HOST % [url_parsed, url_parsed, time]
         c += 1
       end
       default += VARNISH_DEFAULT_CLOSE
@@ -279,8 +280,9 @@ class Router
     def vcl_site(urls, time)
       i = 0
       urls.each do |url|
-        site_file = "/etc/varnish/site-#{url}-#{time}.vcl"
-        `sudo cp #{site_file} /etc/varnish/site-#{url}-old.vcl` if File.exist? site_file
+        url_parsed = url.gsub("http://", "")
+        site_file = "/etc/varnish/site-#{url_parsed}-#{time}.vcl"
+        `sudo cp #{site_file} /etc/varnish/site-#{url_parsed}-old.vcl` if File.exist? site_file
         backend_dir = "backend" + i.to_s
         i += 1
 
