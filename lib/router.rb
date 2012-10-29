@@ -97,11 +97,11 @@ begin
     `#{ulimit_l}`
 
     print "Starting varnish server...\n"
-    `#{varsnish_command}`
+    `#{varnish_command}`
 
     pid = `ps -ef | grep [v]arnishd`    
     if pid.empty? then
-      `#{varsnish_command}`
+      `#{varnish_command}`
       pid = `ps -ef | grep [v]arnishd`    
       if pid.empty? then
         puts("Varnish server is failed to start.")
