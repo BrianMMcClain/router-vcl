@@ -1,23 +1,40 @@
-PATH
-  remote: ../common
+GIT
+  remote: https://github.com/cloudfoundry/common.git
+  revision: 2f45a7ff9d82896704d12e3d37a7379fe2d80375
   specs:
-    vcap_common (0.99)
-      eventmachine (~> 0.12.10)
-      logging (>= 1.5.0)
-      nats
-      posix-spawn
-      thin
-      yajl-ruby
+    vcap_logging (1.0.2)
+      rake
+
+GIT
+  remote: https://github.com/cloudfoundry/eventmachine.git
+  revision: 2806c630d8631d5dcf9fb2555f665b829052aabe
+  branch: release-0.12.11-cf
+  specs:
+    eventmachine (0.12.11.cloudfoundry.3)
+
+GIT
+  remote: https://github.com/cloudfoundry/vcap-common.git
+  revision: c91898e1d74f23446d1d7fe2382df6ace071c0ad
+  ref: c91898e1
+  specs:
+    vcap_common (1.0.10)
+      eventmachine (~> 0.12.11.cloudfoundry.3)
+      nats (~> 0.4.22.beta.8)
+      posix-spawn (~> 0.3.6)
+      thin (~> 1.3.1)
+      yajl-ruby (~> 0.8.3)
 
 GEM
   remote: http://rubygems.org/
   specs:
-    daemons (1.1.8)
-    eventmachine (0.12.10)
-    json_pure (1.7.3)
-    little-plugger (1.1.3)
-    logging (1.7.2)
-      little-plugger (>= 1.1.3)
+    builder (3.1.4)
+    ci_reporter (1.7.3)
+      builder (>= 2.1.2)
+    daemons (1.1.9)
+    diff-lcs (1.1.3)
+    http_parser.rb (0.5.3)
+    json_pure (1.7.5)
+    multi_json (1.3.6)
     nats (0.4.24)
       daemons (>= 1.1.5)
       eventmachine (>= 0.12.10)
@@ -25,23 +42,45 @@ GEM
       thin (>= 1.3.1)
     posix-spawn (0.3.6)
     rack (1.4.1)
+    rack-protection (1.2.0)
+      rack
     rake (0.9.2.2)
+    rspec (2.11.0)
+      rspec-core (~> 2.11.0)
+      rspec-expectations (~> 2.11.0)
+      rspec-mocks (~> 2.11.0)
+    rspec-core (2.11.1)
+    rspec-expectations (2.11.3)
+      diff-lcs (~> 1.1.3)
+    rspec-mocks (2.11.3)
+    simplecov (0.7.1)
+      multi_json (~> 1.0)
+      simplecov-html (~> 0.7.1)
+    simplecov-html (0.7.1)
+    sinatra (1.3.3)
+      rack (~> 1.3, >= 1.3.6)
+      rack-protection (~> 1.2)
+      tilt (~> 1.3, >= 1.3.3)
     thin (1.3.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
-    vcap_logging (0.1.4)
-      rake
-    yajl-ruby (1.1.0)
+    tilt (1.3.3)
+    yajl-ruby (0.8.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   bundler (>= 1.0.10)
-  eventmachine (~> 0.12.10)
-  nats (>= 0.4.10)
+  ci_reporter
+  eventmachine!
+  http_parser.rb
+  nats
   rake
-  vcap_common!
-  vcap_logging
+  rspec
+  simplecov
+  sinatra
+  vcap_common (~> 1.0.9)!
+  vcap_logging!
   yajl-ruby
