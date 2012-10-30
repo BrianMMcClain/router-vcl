@@ -216,7 +216,7 @@ class Router
 
       unless @unregistered_droplets.empty? then
         dead_droplets = @unregistered_droplets.dup
-        @graveyard << @unregistered_droplets.dup
+        @graveyard = @unregistered_droplets.dup
 
         @unregistered_droplets = {}
         dead_droplets.keys.each do |url|
