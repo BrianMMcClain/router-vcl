@@ -85,6 +85,14 @@ VARNISH_SITE_BOTTOM = '
   if (req.http.Upgrade ~ \"(?i)websocket\") {
     return (pipe);
   }
+  
+  sub vcl_pipe {
+    # Copy upgrade header
+    if (req.http.upgrade) {
+      set bereq.http.upgrade = req.http.upgrade;
+    }
+    return (pipe);
+  }
 
   return (lookup);  '
 
