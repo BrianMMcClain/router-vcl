@@ -37,7 +37,7 @@ VARNISH_DEFAULT_CLOSE = '}'
 
 VARNISH_DIRECTOR_RR = 'director %s round-robin {'
 
-VARNISH_BACKEND = '{ .backend = { .host = \"%s\"; .port = \"%s\";  } }'
+VARNISH_BACKEND = '{ .backend = { .host = \"%s\"; .port = \"%s\"; .probe = { .url = \"/\"; .interval = 5s; .timeout = 5s; .window = 5; .threshold = 3; }  } }'
 
 VARNISH_BACKEND_CLOSE = '}'
 
