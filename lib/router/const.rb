@@ -80,6 +80,11 @@ VARNISH_SITE_BOTTOM = '
     /* Not cacheable by default */
     return (pass);
   }
+  
+  # Pipe websocket connections to application
+  if (req.http.Upgrade ~ \"(?i)websocket\") {
+    return (pipe);
+  }
 
   return (lookup);  '
 
